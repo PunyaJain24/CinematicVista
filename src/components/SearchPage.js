@@ -6,7 +6,7 @@ const SearchPage = () => {
     return (
         <div>
             <div className="absolute -z-10">
-                <img src={backGround} />
+                <img className="fixed" src={backGround} />
             </div>
             <SearchBar />
             <MovieSuggestions />

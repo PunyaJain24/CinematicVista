@@ -15,4 +15,4 @@ export const POSTER_URL = "https://image.tmdb.org/t/p/w500";
 export const LANG_TYPES = [{
   identifier : "en", name: "English"},{identifier: "hindi",name: "Hindi"}]
 
-export const OPENAI_KEY = "sk-proj-dX0nX8DUVVFRqK6cCrfmT3BlbkFJJAdx1bTIEQ9E20vcCXGX";
+export const OPENAI_KEY = "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";
