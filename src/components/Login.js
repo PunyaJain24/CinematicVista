@@ -64,10 +64,10 @@ const Login = () => {
     return (
         <div>
             <Header />
-            <div className="absolute -z-20">
+            <div className="absolute -z-20 object-cover">
                 <img className="w-screen h-screen" src={back} />
             </div>
-            <form onSubmit={(e) => e.preventDefault()} className="absolute bg-black mx-auto my-16 left-0 right-0 w-6/12 p-12 text-white rounded-md bg-opacity-80">
+            <form onSubmit={(e) => e.preventDefault()} className="absolute bg-black mx-auto my-[50%] md:my-16 left-0 right-0 w-10/12 md:w-6/12 p-12 text-white rounded-md bg-opacity-80">
                 <h1 className="font-bold text-3xl py-4">{toggleIcon ? "Sign Up" : "SignIn"}</h1>
                 
                 {toggleIcon && <input ref={name} type="text" placeholder="Full Name" className="my-4 p-2 w-full rounded-lg bg-gray-800" />}

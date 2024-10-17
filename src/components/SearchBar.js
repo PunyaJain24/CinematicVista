@@ -1,15 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import lang from "./languageConstraints";
 import { useRef } from "react";
-import openai from "../utils/openai";
 import { URL_OPTIONS } from "../utils/urls";
 import { addGptMovies } from "../utils/searchSlice";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 
 const SearchBar = () => {
     const languageMode = useSelector(store => store.lang.language);
     const searchText = useRef(null);
+    const genAI = new GoogleGenerativeAI("AIzaSyBglGbhCzvIHIz97VWUYA8vnbg_pl7yD7U");
     const dispatch = useDispatch();
+
 
     const searchMovieTMDB = async (movie) => {
         const data = await fetch('https://api.themoviedb.org/3/search/movie?query='+movie+'&include_adult=false&language=en-US&page=1', URL_OPTIONS);
@@ -25,29 +27,31 @@ const SearchBar = () => {
         //     messages: [{ role: 'user', content: query }],
         //     model: 'gpt-3.5-turbo',
         //   });
-        // if(!result?.choices){
-        //     return <h1>Cann't fetch data. Try Again in some time</h1>
-        // }
         //const gptMovies = result.choices?.[0]?.message?.content.split(",");
-        const gptMovies = ["Andaz Apna Apna", "Hera Pheri", "Padosan", "Angoor", "Chupke Chupke"]
-
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const result = await model.generateContent(query);
+        if(!result){
+            return <h1>Cann't fetch data. Try Again in some time</h1>
+        }
+        const response = await result.response;
+        const text = response.text();
+        const gptMovies = text.split(",");
+        console.log(gptMovies);
         const data = gptMovies.map(movie => searchMovieTMDB(movie));
 
         const tmdbResults = await Promise.all(data);
-
-
         dispatch(addGptMovies({movieNames: gptMovies , moviesFetchData: tmdbResults}));
     }
     return (
-        <div className="pt-[10%] flex justify-center">
-            <form className="bg-black w-1/2 grid grid-cols-12 rounded-md" onSubmit={(e) => e.preventDefault()}>
+        <div className="pt-[15%] md:pt-[4%] flex justify-center">
+            <form className="w-2/3 md:w-1/2 grid grid-cols-12 z-10 rounded-md" onSubmit={(e) => e.preventDefault()}>
                 <input 
                     ref={searchText}
-                    className="p-4 m-4 col-span-9 rounded-md font-semibold text-black" 
+                    className="p-2 my-6 m-2 col-span-9 rounded-2xl font-semibold text-black" 
                     type="text" 
                     placeholder={lang[languageMode].searchPlaceholder}
                 />
-                <button className="bg-blue-700 p-4 col-span-3 m-4 font-mono font-bold text-lg rounded-lg text-white" onClick={handleSearchText}>{lang[languageMode].search}</button>
+                <button className="bg-blue-800 p-1 col-span-3 my-6 m-2 font-mono font-bold text-sm md:text-lg rounded-lg md:rounded-2xl text-white" onClick={handleSearchText}>{lang[languageMode].search}</button>
             </form>
         </div>
     );
